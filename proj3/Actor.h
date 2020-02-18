@@ -13,6 +13,7 @@ public:
     Actor(StudentWorld* sWorld, int imageID, double startX, double startY, Direction dir = 0, int depth = 0, double size = 1.0);
     virtual ~Actor();
     virtual bool exhausted() const;
+    virtual bool isDirtPile();
     virtual void doSomething();
     virtual void playSound(int soundID);
     bool getLifeStatus() const;
@@ -61,7 +62,8 @@ private:
 class DirtPile : public Actor
 {
 public:
-    DirtPile(StudentWorld* sWorld, double dx, double dy, Direction direction = 90, int depth = 1);
+    DirtPile(StudentWorld* sWorld, double dx, double dy, Direction direction = 0, int depth = 1);
+    virtual bool isDirtPile();
 private:
     
 };

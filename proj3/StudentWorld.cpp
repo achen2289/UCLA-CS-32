@@ -3,6 +3,7 @@
 #include "GameConstants.h"
 #include <cmath>
 #include <string>
+#include <vector>
 using namespace std;
 
 GameWorld* createStudentWorld(string assetPath)
@@ -15,6 +16,7 @@ GameWorld* createStudentWorld(string assetPath)
 StudentWorld::StudentWorld(string assetPath)
 : GameWorld(assetPath)
 {
+    soc = nullptr;
 }
 
 StudentWorld::~StudentWorld()
@@ -35,34 +37,23 @@ int StudentWorld::init()
     int nPits = level;
     for (int i=0; i<nPits; i++)
     {
-//        int dx = randInt(0, VIEW_WIDTH);
-//        int dy = randInt(0, VIEW_HEIGHT);
-//        for (int j=i-1; j>=0; j--)
-//        {
-//            Actor* currentActor = actors[actors.size()-j];
-//            while ( ( ((dx-VIEW_RADIUS)^2) + ((dy-VIEW_RADIUS)^2) ) > 14400 || ( (abs(dx - currentActor->getX()) < 2*SPRITE_RADIUS) && abs(dy - currentActor->getY()) < 2*SPRITE_RADIUS))
-//            {
-//                dx = randInt(0, VIEW_WIDTH);
-//                dy = randInt(0, VIEW_HEIGHT);
-//            }
-//        }
         int angle = randInt(0, 360);
         int radius = randInt(0, 120);
-        double dx = radius * cos(angle/180*PI) + VIEW_RADIUS;
-        double dy = radius * sin(angle/180*PI) + VIEW_RADIUS;
+        double dx = radius * cos(angle*1.0/180*PI) + VIEW_RADIUS;
+        double dy = radius * sin(angle*1.0/180*PI) + VIEW_RADIUS;
         for (int j=i-1; j>=0; j--)
+        {
+            Actor* currentActor = actors[actors.size()-j];
+            int tx = currentActor->getX();
+            int ty = currentActor->getY();
+            while ( (pow( (pow(dx - tx, 2.0) + pow(dy - ty, 2.0) ), 0.5)) < 2*SPRITE_RADIUS )
             {
-                Actor* currentActor = actors[actors.size()-j];
-                int tx = currentActor->getX();
-                int ty = currentActor->getY();
-                while ( (((((int)dx-tx)^2) + (((int)dy-ty)^2))^(1/2)) < 2*SPRITE_RADIUS )
-                {
-                    angle = randInt(0, 360);
-                    radius = randInt(0, 120);
-                    dx = radius * cos(angle/180*PI) + VIEW_RADIUS;
-                    dy = radius * sin(angle/180*PI) + VIEW_RADIUS;
-                }
+                angle = randInt(0, 360);
+                radius = randInt(0, 120);
+                dx = radius * cos(angle*1.0/180*PI) + VIEW_RADIUS;
+                dy = radius * sin(angle*1.0/180*PI) + VIEW_RADIUS;
             }
+        }
         actors.push_back(new Pit(this, dx, dy));
     }
     int nFood = min(5*level, 25);
@@ -70,21 +61,22 @@ int StudentWorld::init()
     {
         int angle = randInt(0, 360);
         int radius = randInt(0, 120);
-        double dx = radius * cos(angle/180*PI) + VIEW_RADIUS;
-        double dy = radius * sin(angle/180*PI) + VIEW_RADIUS;
+        double dx = radius * cos(angle*1.0/180*PI) + VIEW_RADIUS;
+        double dy = radius * sin(angle*1.0/180*PI) + VIEW_RADIUS;
         for (int j=i+nPits-1; j>=0; j--)
+        {
+            Actor* currentActor = actors[actors.size()-j-1];
+            double tx = currentActor->getX();
+            double ty = currentActor->getY();
+//            while ( (((((int)dx-tx)^2) + (((int)dy-ty)^2))^(1/2)) < 2*SPRITE_RADIUS )
+            while ( (pow( (pow(dx - tx, 2.0) + pow(dy - ty, 2.0) ), 0.5)) < 2*SPRITE_RADIUS )
             {
-                Actor* currentActor = actors[actors.size()-j-1];
-                int tx = currentActor->getX();
-                int ty = currentActor->getY();
-                while ( (((((int)dx-tx)^2) + (((int)dy-ty)^2))^(1/2)) < 2*SPRITE_RADIUS )
-                {
-                    angle = randInt(0, 360);
-                    radius = randInt(0, 120);
-                    dx = radius * cos(angle/180*PI) + VIEW_RADIUS;
-                    dy = radius * sin(angle/180*PI) + VIEW_RADIUS;
-                }
+                angle = randInt(0, 360);
+                radius = randInt(0, 120);
+                dx = radius * cos(angle*1.0/180*PI) + VIEW_RADIUS;
+                dy = radius * sin(angle*1.0/180*PI) + VIEW_RADIUS;
             }
+        }
         actors.push_back(new Food(this, dx, dy));
     }
     int nDirt = max(180 - 20*level, 20);
@@ -92,21 +84,37 @@ int StudentWorld::init()
     {
         int angle = randInt(0, 360);
         int radius = randInt(0, 120);
-        double dx = radius * cos(angle/180*PI) + VIEW_RADIUS;
-        double dy = radius * sin(angle/180*PI) + VIEW_RADIUS;
+        double dx = radius * cos(angle*1.0/180*PI) + VIEW_RADIUS;
+        double dy = radius * sin(angle*1.0/180*PI) + VIEW_RADIUS;
         for (int j=i+nPits+nFood-1; j>=i; j--)
+        {
+            Actor* currentActor = actors[actors.size()-j-1];
+            int tx = currentActor->getX();
+            int ty = currentActor->getY();
+            while ( (pow( (pow(dx - tx, 2.0) + pow(dy - ty, 2.0) ), 0.5)) < 2*SPRITE_RADIUS )
             {
-                Actor* currentActor = actors[actors.size()-j-1];
-                int tx = currentActor->getX();
-                int ty = currentActor->getY();
-                while ( (((((int)dx-tx)^2) + (((int)dy-ty)^2))^(1/2)) < 2*SPRITE_RADIUS )
-                {
-                    angle = randInt(0, 360);
-                    radius = randInt(0, 120);
-                    dx = radius * cos(angle/180*PI) + VIEW_RADIUS;
-                    dy = radius * sin(angle/180*PI) + VIEW_RADIUS;
-                }
+                angle = randInt(0, 360);
+                radius = randInt(0, 120);
+                dx = radius * cos(angle*1.0/180*PI) + VIEW_RADIUS;
+                dy = radius * sin(angle*1.0/180*PI) + VIEW_RADIUS;
             }
+        }
+//        for (vector<Actor*>::iterator itr = actors.begin(); itr != actors.end(); itr++)
+//        {
+//            if (!((*itr)->isDirtPile()))
+//            {
+//                Actor* currentActor = *itr;
+//                int tx = currentActor->getX();
+//                int ty = currentActor->getY();
+//                while ( (((((int)dx-tx)^2) + (((int)dy-ty)^2))^(1/2)) < 2*SPRITE_RADIUS )
+//                {
+//                    angle = randInt(0, 360);
+//                    radius = randInt(0, 120);
+//                    dx = radius * cos(angle*1.0/180*PI) + VIEW_RADIUS;
+//                    dy = radius * sin(angle*1.0/180*PI) + VIEW_RADIUS;
+//                }
+//            }
+//        }
         actors.push_back(new DirtPile(this, dx, dy));
     }
     return GWSTATUS_CONTINUE_GAME;
@@ -139,6 +147,7 @@ int StudentWorld::move()
                 return GWSTATUS_FINISHED_LEVEL;
             }
         }
+        itr++;
     }
     
     // remove dead game objects

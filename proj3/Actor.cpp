@@ -24,8 +24,14 @@ bool Actor::exhausted() const
     return false;
 }
 
+bool Actor::isDirtPile()
+{
+    return false;
+}
+
 void Actor::doSomething()
 {
+    return;
 }
 
 void Actor::playSound(int soundID)
@@ -104,8 +110,8 @@ void Socrates::doSomething()
             {
                 m_positionalAngle += 5;
                 const double PI = 4 * atan(1);
-                double x = VIEW_RADIUS + VIEW_RADIUS*cos(m_positionalAngle/180*PI);
-                double y = VIEW_RADIUS + VIEW_RADIUS*sin(m_positionalAngle/180*PI);
+                double x = VIEW_RADIUS + VIEW_RADIUS*cos(m_positionalAngle*1.0/180*PI);
+                double y = VIEW_RADIUS + VIEW_RADIUS*sin(m_positionalAngle*1.0/180*PI);
                 moveTo(x, y);
                 setDirection(m_positionalAngle + 180);
                 m_replenish = true;
@@ -115,8 +121,8 @@ void Socrates::doSomething()
             {
                 m_positionalAngle -= 5;
                 const double PI = 4 * atan(1);
-                double x = VIEW_RADIUS + VIEW_RADIUS*cos(m_positionalAngle/180*PI);
-                double y = VIEW_RADIUS + VIEW_RADIUS*sin(m_positionalAngle/180*PI);
+                double x = VIEW_RADIUS + VIEW_RADIUS*cos(m_positionalAngle*1.0/180*PI);
+                double y = VIEW_RADIUS + VIEW_RADIUS*sin(m_positionalAngle*1.0/180*PI);
                 moveTo(x, y);
                 setDirection(m_positionalAngle + 180);
                 m_replenish = true;
@@ -153,7 +159,7 @@ Disinfectant::Disinfectant(StudentWorld* sWorld, double dx, double dy, Direction
 
 void Disinfectant::doSomething()
 {
-    
+    return;
 }
 
 Flame::Flame(StudentWorld* sWorld, double dx, double dy, Direction direction, int depth)
@@ -164,12 +170,17 @@ Flame::Flame(StudentWorld* sWorld, double dx, double dy, Direction direction, in
 
 void Flame::doSomething()
 {
-    
+    return;
 }
 
 DirtPile::DirtPile(StudentWorld* sWorld, double dx, double dy, Direction direction, int depth)
 : Actor(sWorld, IID_DIRT, dx, dy, direction, depth)
 {
+}
+
+bool DirtPile::isDirtPile()
+{
+    return true;
 }
 
 Pit::Pit(StudentWorld* sWorld, double dx, double dy, Direction direction, int depth)
